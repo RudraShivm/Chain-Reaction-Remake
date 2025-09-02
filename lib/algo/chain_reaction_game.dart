@@ -69,7 +69,7 @@ GameState runMinimax(MinimaxArgs args) {
         startTime,
         args.aiTimeLimit,
         args.cancelToken,
-        args.player == Player.blue ? args.blueHeuristic : args.redHeuristic
+        args.player == Player.blue ? args.blueHeuristic : args.redHeuristic,
       );
 
       bestMoveSoFar = currentBestMove;
@@ -100,9 +100,10 @@ GameState runMinimax(MinimaxArgs args) {
         1,
         children.first.$1,
         children.first.$2,
+        children.first.$3,
       );
     } else {
-      return GameState(0, 0, args.board, args.board);
+      return GameState(0, 0, args.board, args.board, false);
     }
   }
 
@@ -114,7 +115,15 @@ class GameState {
   int depth = 0;
   List<List<String>> boardConfig = [];
   List<List<String>> explodedBoardConfig = [];
-  GameState(this.eval, this.depth, this.boardConfig, this.explodedBoardConfig);
+  bool
+  neededExplosion; // whether boardConfig and explodedBoardConfig is same or not
+  GameState(
+    this.eval,
+    this.depth,
+    this.boardConfig,
+    this.explodedBoardConfig,
+    this.neededExplosion,
+  );
 }
 
 class ChainReactionGame {
@@ -164,7 +173,7 @@ class ChainReactionGame {
     return neighbors;
   }
 
-  List<List<String>> processExplosions(
+  (List<List<String>>, bool) processExplosions(
     List<List<String>> board,
     Player player,
   ) {
@@ -223,10 +232,11 @@ class ChainReactionGame {
     }
 
     if (needsAnotherPass && !boardSame) {
-      return processExplosions(tempBoard, player);
+      final result = processExplosions(tempBoard, player);
+      tempBoard = result.$1;
     }
 
-    return tempBoard;
+    return (tempBoard, !boardSame);
   }
 
   bool isTerminalState(List<List<String>> position) {
@@ -282,16 +292,20 @@ class ChainReactionGame {
     Player playerForThisTurn = maximizingPlayer ? Player.blue : Player.red;
 
     if (depth == 0 || isTerminalState(position)) {
-      final explodedPos = processExplosions(position, playerForThisTurn);
+      final (explodedPos, neededExplosion) = processExplosions(
+        position,
+        playerForThisTurn,
+      );
       return GameState(
         evaluate(explodedPos, currentPlayerHeuristic),
         depth,
         position,
         explodedPos,
+        neededExplosion,
       );
     }
 
-    List<(List<List<String>>, List<List<String>>)> children = getChildren(
+    List<(List<List<String>>, List<List<String>>, bool)> children = getChildren(
       position,
       playerForThisTurn,
       startTime,
@@ -305,7 +319,9 @@ class ChainReactionGame {
           children.isNotEmpty ? children.first.$1 : position;
       List<List<String>> bestExplodedState =
           children.isNotEmpty ? children.first.$2 : position;
-      for (var (state, explodedState) in children) {
+      bool bestStateNeededExplosion =
+          children.isNotEmpty ? children.first.$3 : true;
+      for (var (state, explodedState, neededExplosion) in children) {
         if (cancelToken.isCanceled) {
           throw TimeLimitedException('Minimax canceled in loop');
         }
@@ -327,18 +343,27 @@ class ChainReactionGame {
           maxEval = childState.eval;
           bestState = state;
           bestExplodedState = explodedState;
+          bestStateNeededExplosion = neededExplosion;
         }
         alpha = max(alpha, childState.eval);
         if (beta <= alpha) break;
       }
-      return GameState(maxEval, depth, bestState, bestExplodedState);
+      return GameState(
+        maxEval,
+        depth,
+        bestState,
+        bestExplodedState,
+        bestStateNeededExplosion,
+      );
     } else {
       int minEval = pow(2, 31).toInt();
       List<List<String>> bestState =
           children.isNotEmpty ? children.first.$1 : position;
       List<List<String>> bestExplodedState =
           children.isNotEmpty ? children.first.$2 : position;
-      for (var (state, explodedState) in children) {
+      bool bestStateNeededExplosion =
+          children.isNotEmpty ? children.first.$3 : true;
+      for (var (state, explodedState, neededExplosion) in children) {
         if (cancelToken.isCanceled) {
           throw TimeLimitedException('Minimax canceled in loop');
         }
@@ -360,15 +385,22 @@ class ChainReactionGame {
           minEval = childState.eval;
           bestState = state;
           bestExplodedState = explodedState;
+          bestStateNeededExplosion = neededExplosion;
         }
         beta = min(beta, childState.eval);
         if (beta <= alpha) break;
       }
-      return GameState(minEval, depth, bestState, bestExplodedState);
+      return GameState(
+        minEval,
+        depth,
+        bestState,
+        bestExplodedState,
+        bestStateNeededExplosion,
+      );
     }
   }
 
-  List<(List<List<String>>, List<List<String>>)> getChildren(
+  List<(List<List<String>>, List<List<String>>, bool)> getChildren(
     List<List<String>> position,
     Player player,
     DateTime startTime,
@@ -380,6 +412,7 @@ class ChainReactionGame {
         List<List<String>> newBoard,
         List<List<String>> explodedBoard,
         int criticalMass,
+        bool neededExplosion,
       )
     >
     tempChildren = [];
@@ -400,10 +433,15 @@ class ChainReactionGame {
           newBoard[i][j] = '${int.parse(newBoard[i][j][0]) + 1}$playerChar';
 
           int criticalMass = getCriticalMass(i, j);
+          final (explodedBoard, neededExplosion) = processExplosions(
+            newBoard,
+            player,
+          );
           tempChildren.add((
             newBoard,
-            processExplosions(newBoard, player),
+            explodedBoard,
             criticalMass,
+            neededExplosion,
           ));
         }
       }
@@ -411,7 +449,7 @@ class ChainReactionGame {
 
     tempChildren.sort((a, b) => a.$3.compareTo(b.$3));
 
-    return tempChildren.map((child) => (child.$1, child.$2)).toList();
+    return tempChildren.map((child) => (child.$1, child.$2, child.$4)).toList();
   }
 
   int evaluate(List<List<String>> position, Heuristic heuristic) {
@@ -540,7 +578,6 @@ class ChainReactionGame {
     return (100 * score / maxScore).clamp(-100, 100).toInt();
   }
 
-
   int evaluateRandom() {
     return Random().nextInt(201) - 100;
   }
@@ -556,7 +593,7 @@ class ChainReactionGame {
       GameConfig.playerHeuristicMap[Player.blue]!,
       GameConfig.playerHeuristicMap[Player.red]!,
     );
-
+    await Future.delayed(Duration(milliseconds: GameConfig.delayMove));
     try {
       final GameState bestMove = await compute(runMinimax, args);
       if (cancelToken.isCanceled) {
@@ -582,9 +619,16 @@ class ChainReactionGame {
         if (moveFound) break;
       }
       board = bestMove.boardConfig;
-      await writeGameState('');
-      board = bestMove.explodedBoardConfig;
       await writeGameState('${GameConfig.playerNameMap[currentPlayer]} Move:');
+      if (bestMove.neededExplosion) {
+        await Future.delayed(
+          Duration(milliseconds: (GameConfig.delayMove * 0.4).toInt()),
+        );
+        board = bestMove.explodedBoardConfig;
+        await writeGameState(
+          '${GameConfig.playerNameMap[currentPlayer]} Move:',
+        );
+      }
       await readGameState();
     } catch (e) {
       if (cancelToken.isCanceled) {
@@ -617,14 +661,6 @@ class ChainReactionGame {
       if (onStateChanged != null && !cancelToken._isCanceled) {
         winner = currentPlayer;
         onStateChanged!(board);
-      }
-      Player opponent = currentPlayer == Player.blue ? Player.red : Player.blue;
-      if (header.isEmpty) {
-        await Future.delayed(Duration(milliseconds: GameConfig.delayMove));
-      } else if ((playerHumanMap[opponent] != null &&
-          !playerHumanMap[opponent]!)) {
-        // if opponent is human, no need to delay. Random Agent is considered human here (it is ), so I have to handle it everywhere :(
-        await Future.delayed(Duration(milliseconds: GameConfig.delayMove));
       }
     } catch (e) {
       debugPrint('Error writing game state: $e');

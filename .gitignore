@@ -43,3 +43,19 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Keystore files for signing APKs
+*.jks
+android/key.properties
+
+# Additional Flutter/Dart files
+.packages
+generated_plugin_registrant.dart
+*.flutter-plugins
+*.flutter-plugins-dependencies
+
+# Environment-specific configuration
+*.env
+.env.*
+
+.vscode/

@@ -97,14 +97,20 @@ class _GameScreenState extends State<GameScreen>
       widget.game.onCellSelected?.call(MapEntry(row, col));
       widget.game.board[row][col] =
           '${int.parse(widget.game.board[row][col][0]) + 1}$player';
-      await widget.game.writeGameState('');
-      widget.game.board = widget.game.processExplosions(
-        widget.game.board,
-        widget.game.currentPlayer,
-      );
       await widget.game.writeGameState(
         '${GameConfig.playerNameMap[widget.game.currentPlayer]} Move:',
       );
+      var result = widget.game.processExplosions(
+        widget.game.board,
+        widget.game.currentPlayer,
+      );
+      widget.game.board = result.$1;
+      var neededExplosion = result.$2;
+      if (neededExplosion) {
+        await widget.game.writeGameState(
+          '${GameConfig.playerNameMap[widget.game.currentPlayer]} Move:',
+        );
+      }
       await widget.game.readGameState();
     }
   }
