@@ -149,6 +149,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
     <img src="assets/screenshots/titleScreen.jpeg" alt="Game Home" width="250"/>
     <img src="assets/screenshots/game1.jpeg" alt="Gameplay" width="250"/>
     <img src="assets/screenshots/game2.jpeg" alt="Gameplay" width="250"/>
+    <img src="assets/screenshots/defeat.jpeg" alt="Gameplay" width="250"/>
     <img src="assets/screenshots/settings.jpeg" alt="Settings" width="250"/>
     <img src="assets/screenshots/history.jpeg" alt="History" width="250"/>
 </div>
