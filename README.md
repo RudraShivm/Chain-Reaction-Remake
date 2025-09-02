@@ -40,6 +40,18 @@ The AI employs alpha-beta pruning to efficiently explore the game tree, reducing
   - Track game results
   - View historical performance
 
+## 🎲 Game Rules
+
+1. Players take turns placing orbs (🔵|🔴) in cells
+2. Each cell has a critical mass which is equal to the number of neighbouring cells. So this may change based on its position:
+   - Corner cells: 2
+   - Edge cells: 3
+   - Middle cells: 4
+3. When a cell reaches critical mass, it explodes 💥:
+   - Distributes orbs to adjacent cells
+   - Converts opponents' orbs into own
+4. Game ends when one player owns all orbs on board 🏆
+
 ## 🛠️ Technical Details
 
 ### AI Implementation
@@ -100,17 +112,9 @@ The game employs three key data structures that work together for optimal perfor
 
 These optimizations become especially important during AI calculations where the minimax algorithm needs to simulate thousands of potential moves and explosions.
 
-## 🎲 Game Rules
+## 📊 AI Performance Report
 
-1. Players take turns placing orbs (🔵|🔴) in cells
-2. Each cell has a critical mass which is equal to the number of neighbouring cells. So this may change based on its position:
-   - Corner cells: 2
-   - Edge cells: 3
-   - Middle cells: 4
-3. When a cell reaches critical mass, it explodes 💥:
-   - Distributes orbs to adjacent cells
-   - Converts opponents' orbs into own
-4. Game ends when one player owns all orbs on board 🏆
+For a detailed analysis of the AI system's performance metrics, heuristic strategy comparisons, and implementation optimizations, please refer to my report : [Chain Reaction AI Performance Analysis](2105163.pdf)
 
 ## 🛠️ Building from Source
 
