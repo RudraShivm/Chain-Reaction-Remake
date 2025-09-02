@@ -139,7 +139,7 @@ These optimizations become especially important during AI calculations where the
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
 
 ## 📸 Screenshots
 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
