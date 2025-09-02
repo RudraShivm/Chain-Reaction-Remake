@@ -1,10 +1,7 @@
+![Banner](assets/icon/banner.png)
 # Chain Reaction Game
-<center>
-<img src="assets/icon/app_icon.png" alt="app icon" width="200" style="border-radius: 15px; border: 2px solid #000;"/>
-</center>
-</br>
 
-A strategic board game implementation featuring an advanced AI system powered by minimax algorithm with alpha-beta pruning. Built with Flutter, this remake focuses on performance optimization and intelligent gameplay through iterative deepening search and multiple heuristic strategies.
+Chain Reaction Game is a strategic board game implementation featuring an advanced AI system powered by minimax algorithm with alpha-beta pruning. Built with Flutter, this remake focuses on performance optimization and intelligent gameplay through iterative deepening search and multiple heuristic strategies.
 
 The AI employs alpha-beta pruning to efficiently explore the game tree, reducing the number of nodes evaluated from O(b^d) to approximately O(b^(d/2)) in the best case, where b is the branching factor and d is the search depth. This optimization, combined with iterative deepening, allows the AI to make strategic decisions even in complex board positions with potential chain reactions.
 
