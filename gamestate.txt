@@ -1,4 +1,4 @@
-Puja Move:
+Player 1 Move:
 0 0 0 0 0 0
 0 0 0 0 0 0
 0 0 0 0 0 0

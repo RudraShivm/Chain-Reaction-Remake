@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:chain_reaction/game_config.dart';
 import 'package:chain_reaction/theme/app_theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:chain_reaction/algo/chain_reaction_game.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -235,7 +234,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         ],
                       ),
                     ).animate().fadeIn(duration: 250.ms);
-                  }).toList(),
+                  }),
                   const SizedBox(height: 20),
                   // Global Statistics
                   Text(
@@ -278,7 +277,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         ],
                       ),
                     ).animate().fadeIn(duration: 400.ms);
-                  }).toList(),
+                  }),
                   const SizedBox(height: 20),
                   // Last 10 Games
                   Text(
@@ -311,7 +310,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       final redHeuristic = game['redHeuristic'];
                       final timestamp = DateTime.parse(game['timestamp']);
                       final duration = game['duration'] as int? ?? 0;
-                      var winnerHeuristic = null;
+                      var winnerHeuristic;
                       if (winner == 'Blue' && blueHeuristic != null) {
                         winnerHeuristic = blueHeuristic;
                       } else if (winner == 'Red' && redHeuristic != null) {
@@ -380,7 +379,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ).animate().fadeIn(
                         duration: Duration(milliseconds: 500 + index * 50),
                       );
-                    }).toList(),
+                    }),
                 ],
               ),
             ),

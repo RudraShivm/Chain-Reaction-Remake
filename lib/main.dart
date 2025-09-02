@@ -1,7 +1,6 @@
 import 'package:chain_reaction/screens/game_screen.dart';
 import 'package:chain_reaction/screens/history_screen.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 // Conditional import for window_size only on desktop
 // ignore: uri_does_not_exist
 import 'window_size_stub.dart'

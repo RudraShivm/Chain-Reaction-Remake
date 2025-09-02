@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:chain_reaction/game_config.dart';
 import 'package:chain_reaction/theme/app_theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:chain_reaction/algo/chain_reaction_game.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
