@@ -1,4 +1,4 @@
-![Banner](assets/icon/banner.png)
+![Banner](assets/docs/banner.png)
 # Chain Reaction Game
 
 Chain Reaction Game is a strategic board game implementation featuring an advanced AI system powered by minimax algorithm with alpha-beta pruning. Built with Flutter, this remake focuses on performance optimization and intelligent gameplay through iterative deepening search and multiple heuristic strategies.
@@ -12,6 +12,16 @@ The AI employs alpha-beta pruning to efficiently explore the game tree, reducing
 [![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com)
 
 </div>
+
+## 📦 Installation
+You may head to the [Releases](https://github.com/RudraShivm/Chain-Reaction-Remake/releases) tab to check out all the versions of the app.
+Download the APK for the latest version of **Chain Reaction Game** from the link below:  
+<br>
+[![logo](assets/docs/download.png)](https://github.com/RudraShivm/Chain-Reaction-Remake/releases/download/v1.0.0/Chain_Reaction_Game.apk)
+<br>
+Or Scan QR Code
+<br>
+<img src="assets/docs/qrCode.png" alt="qr code" width="200"/>
 
 ## ✨ Features
 
