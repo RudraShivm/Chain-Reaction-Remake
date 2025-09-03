@@ -64,17 +64,17 @@ The game features a sophisticated AI system that uses:
    - Configurable search depth from Settings menu
 
 2. **Heuristic Functions**
-   - [OrbCount](lib/algo/chain_reaction_game.dart#L443): Prioritizes maximizing AI's orb count, assuming more orbs indicate a stronger position.
-   - [CriticalMass](lib/algo/chain_reaction_game.dart#L466): Encourages moves that bring cells closer to triggering explosions, which can convert opponent orbs.
-   - [OpponentMobility](lib/algo/chain_reaction_game.dart#L489): Aims to restrict opponent's options, limiting their strategic flexibility. Works by evaluating the difference in valid moves between AI and opponent.
-   - [ExplosionPotential](lib/algo/chain_reaction_game.dart#L509): Promotes chain reactions to capture opponent orbs or expand control. Rewards cells one orb from exploding if adjacent to opponent or empty cells.
-   - [Balanced](lib/algo/chain_reaction_game.dart#L428): Combines multiple strategies by linear weighting for optimal play.
+   - [OrbCount](lib/algo/chain_reaction_game.dart#L481): Prioritizes maximizing AI's orb count, assuming more orbs indicate a stronger position.
+   - [CriticalMass](lib/algo/chain_reaction_game.dart#L504): Encourages moves that bring cells closer to triggering explosions, which can convert opponent orbs.
+   - [OpponentMobility](lib/algo/chain_reaction_game.dart#L527): Aims to restrict opponent's options, limiting their strategic flexibility. Works by evaluating the difference in valid moves between AI and opponent.
+   - [ExplosionPotential](lib/algo/chain_reaction_game.dart#L547): Promotes chain reactions to capture opponent orbs or expand control. Rewards cells one orb from exploding if adjacent to opponent or empty cells.
+   - [Balanced](lib/algo/chain_reaction_game.dart#L466): Combines multiple strategies by linear weighting for optimal play.
 
 ### ⚡ Performance Optimizations
 #### Efficient board state management
 The game uses a string-based cell representation ('0' for empty, 'nB'/'nR' for n orbs) which significantly reduces memory usage compared to using custom objects for each cell. This approach enables quick state comparisons and efficient serialization for file storage. Alternative approaches like using enums or custom cell objects would have increased memory overhead and complicated the serialization process for game state persistence.
 
-Code example from [implementation](lib/algo/chain_reaction_game.dart#L121):
+Code example from [implementation](lib/algo/chain_reaction_game.dart#L130):
 ```dart
 List<List<String>> board = List.generate(
   GameConfig.rows,
@@ -92,19 +92,19 @@ final GameState bestMove = await compute(runMinimax, args);
 #### Memory-efficient data structures
 The game employs three key data structures that work together for optimal performance:
 
-1. Queue<MapEntry<int, int>> for explosion chains ([implementation](lib/algo/chain_reaction_game.dart#L173)):
+1. Queue<MapEntry<int, int>> for explosion chains ([implementation](lib/algo/chain_reaction_game.dart#L182)):
    ```dart
    Queue<MapEntry<int, int>> explosionQueue = Queue();
    ```
    Using a queue instead of a list ensures O(1) operations for both adding and removing explosion cells. A regular list would have required O(n) operations for removing elements from the beginning.
 
-2. Set<String> for tracking explosions ([implementation](lib/algo/chain_reaction_game.dart#L174)):
+2. Set<String> for tracking explosions ([implementation](lib/algo/chain_reaction_game.dart#L183)):
    ```dart
    Set<String> explodedThisPass = {};
    ```
    Using a set provides O(1) lookup for checking already exploded cells, compared to O(n) with a list. This is critical during chain reactions where the same cell might be checked multiple times.
 
-3. List.from() for efficient board copying ([implementation](lib/algo/chain_reaction_game.dart#L171)):
+3. List.from() for efficient board copying ([implementation](lib/algo/chain_reaction_game.dart#L180)):
    ```dart
    var tempBoard = board.map((row) => List<String>.from(row)).toList();
    ```
